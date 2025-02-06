@@ -1,13 +1,16 @@
+
 <!DOCTYPE html>
-<html>
+<html dir="rtl" lang="he">
 <head>
-    <title>Your Location on OpenStreetMap</title>
+    <title>בחירת מיקום אקראי</title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <style>
         body { 
             margin: 0; 
             padding: 0; 
-            font-family: Arial, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            direction: rtl;
         }
         #map { 
             width: 100vw; 
@@ -21,17 +24,53 @@
             z-index: 1000;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .radius-button, .google-maps-button {
-            padding: 10px 20px;
+        .radius-button {
+            padding: 12px 24px;
             background: white;
-            border: 2px solid #ccc;
-            border-radius: 5px;
+            border: 2px solid #4285f4;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
+            color: #4285f4;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
-        .radius-button:hover, .google-maps-button:hover {
-            background: #f0f0f0;
+        .radius-button:hover {
+            background: #4285f4;
+            color: white;
+        }
+        .nav-button {
+            padding: 12px 24px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+        .google-maps-button {
+            background: #4285f4;
+        }
+        .google-maps-button:hover {
+            background: #357abd;
+        }
+        .moovit-button {
+            background: #07cf93;
+        }
+        .moovit-button:hover {
+            background: #06b37f;
         }
         .location-button {
             position: absolute;
@@ -39,43 +78,72 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            padding: 10px 20px;
+            padding: 12px 24px;
             background: white;
-            border: 2px solid #ccc;
-            border-radius: 5px;
+            border: 2px solid #4285f4;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+            color: #4285f4;
+            transition: all 0.3s ease;
         }
-        .google-maps-button {
+        .location-button:hover {
             background: #4285f4;
             color: white;
-            border: none;
         }
         .status-message {
             position: absolute;
-            top: 80px;
+            top: 100px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
             background: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: 2px solid #ccc;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: none;
+            text-align: center;
+            min-width: 200px;
+        }
+        .countdown-container {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            text-align: center;
+            min-width: 200px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .timer {
+            color: #4285f4;
+            font-size: 24px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
     <div class="button-container">
-        <button class="radius-button" onclick="showRandomLocation(5)">5 km</button>
-        <button class="radius-button" onclick="showRandomLocation(10)">10 km</button>
-        <button class="radius-button" onclick="showRandomLocation(15)">15 km</button>
-        <button class="google-maps-button" onclick="openInGoogleMaps()">Open in Google Maps</button>
-    <button class="google-maps-button" onclick="openInMoovit()" style="background: #07cf93;">Open in Moovit</button>
+        <button class="radius-button" onclick="showRandomLocation(5)">5 ק״מ</button>
+        <button class="radius-button" onclick="showRandomLocation(10)">10 ק״מ</button>
+        <button class="radius-button" onclick="showRandomLocation(15)">15 ק״מ</button>
+        <button class="nav-button google-maps-button" onclick="openInGoogleMaps()">Google Maps-פתח ב</button>
+        <button class="nav-button moovit-button" onclick="openInMoovit()">Moovit-פתח ב</button>
     </div>
     <div id="map"></div>
     <div id="status" class="status-message"></div>
-    <button class="location-button" onclick="locateUser()">Show My Location</button>
+    <div id="countdown" class="countdown-container">
+        <div>זמן מוערך להגעה עם תחבורה ציבורית:</div>
+        <div class="timer" id="timer"></div>
+    </div>
+    <button class="location-button" onclick="locateUser()">מצא את המיקום שלי</button>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
@@ -84,7 +152,7 @@
         let randomMarker;
         let userPosition;
         let randomPosition;
-        let transitStops = new Map();
+        let countdownInterval;
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -99,6 +167,35 @@
 
         function hideStatus() {
             document.getElementById('status').style.display = 'none';
+        }
+
+        function startCountdown(travelTimeInMinutes) {
+            // Clear any existing countdown
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            const countdownElement = document.getElementById('countdown');
+            const timerElement = document.getElementById('timer');
+            let timeLeft = travelTimeInMinutes * 60; // Convert to seconds
+
+            function updateTimer() {
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+
+                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft === 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.style.display = 'none';
+                }
+                timeLeft--;
+            }
+
+            countdownElement.style.display = 'block';
+            updateTimer();
+            countdownInterval = setInterval(updateTimer, 1000);
         }
 
         async function fetchTransitStops(lat, lon, radius) {
@@ -130,6 +227,12 @@
                 console.error('Error fetching transit stops:', error);
                 throw error;
             }
+        }
+
+        function calculateTravelTime(distance) {
+            // Rough estimate: 30 km/h average speed for public transport
+            const hoursByPublicTransport = (distance / 30) * 2; // Doubled as requested
+            return Math.round(hoursByPublicTransport * 60); // Convert to minutes
         }
 
         function getRandomLocation(center, radius) {
@@ -169,19 +272,17 @@
         
         async function showRandomLocation(radius) {
             if (!userPosition) {
-                alert("Please allow location access first!");
+                alert("אנא אשר גישה למיקום שלך תחילה");
                 return;
             }
             
-            showStatus('Finding suitable location...');
+            showStatus('מחפש מיקום מתאים...');
             
             try {
-                // Clear existing markers
                 if (randomMarker) {
                     map.removeLayer(randomMarker);
                 }
 
-                // Fetch transit stops if we don't have them for this area
                 const stops = await fetchTransitStops(userPosition.lat, userPosition.lng, radius);
                 
                 let validLocation = null;
@@ -202,19 +303,17 @@
                 }
 
                 if (!validLocation) {
-                    showStatus('No suitable location found near public transport');
+                    showStatus('לא נמצא מיקום מתאים ליד תחבורה ציבורית');
                     setTimeout(hideStatus, 2000);
                     return;
                 }
 
                 randomPosition = validLocation;
                 
-                // Add marker for random location
                 randomMarker = L.marker(randomPosition).addTo(map);
-                const stopName = nearestStop.tags ? (nearestStop.tags.name || 'Unnamed stop') : 'Bus stop';
-                randomMarker.bindPopup(`Near: ${stopName}`).openPopup();
+                const stopName = nearestStop.tags ? (nearestStop.tags.name || 'תחנה ללא שם') : 'תחנת אוטובוס';
+                randomMarker.bindPopup(`תחנה קרובה: ${stopName}`).openPopup();
                 
-                // Draw radius circle
                 const circle = L.circle([userPosition.lat, userPosition.lng], {
                     color: 'blue',
                     fillColor: '#30f',
@@ -222,29 +321,32 @@
                     radius: radius * 1000
                 }).addTo(map);
                 
-                // Fit bounds to show both markers
                 const bounds = L.latLngBounds([
                     [userPosition.lat, userPosition.lng],
                     randomPosition
                 ]).pad(0.1);
                 map.fitBounds(bounds);
                 
-                // Remove circle after 2 seconds
                 setTimeout(() => {
                     map.removeLayer(circle);
                 }, 2000);
 
+                // Calculate and start countdown
+                const distance = getDistance(userPosition.lat, userPosition.lng, randomPosition[0], randomPosition[1]);
+                const travelTimeMinutes = calculateTravelTime(distance);
+                startCountdown(travelTimeMinutes);
+
                 hideStatus();
             } catch (error) {
                 console.error('Error:', error);
-                showStatus('Error finding location. Please try again.');
+                showStatus('שגיאה במציאת מיקום. אנא נסה שוב');
                 setTimeout(hideStatus, 2000);
             }
         }
         
         function openInGoogleMaps() {
             if (!userPosition || !randomPosition) {
-                alert("Please generate a random location first!");
+                alert("אנא בחר מיקום אקראי תחילה");
                 return;
             }
             
@@ -254,16 +356,12 @@
 
         function openInMoovit() {
             if (!userPosition || !randomPosition) {
-                alert("Please generate a random location first!");
+                alert("אנא בחר מיקום אקראי תחילה");
                 return;
             }
             
-            // Deep link for mobile app
             const appUrl = `moovit://directions?dest_lat=${randomPosition[0]}&dest_lon=${randomPosition[1]}&orig_lat=${userPosition.lat}&orig_lon=${userPosition.lng}&auto_run=true`;
-            
-            // Try to open app first, then fall back to web
             window.location.href = appUrl;
-            
         }
         
         function locateUser() {
@@ -274,16 +372,13 @@
                     
                     userPosition = { lat, lng: lon };
                     
-                    // Remove existing marker if any
                     if (userMarker) {
                         map.removeLayer(userMarker);
                     }
                     
-                    // Add marker at user's location
                     userMarker = L.marker([lat, lon]).addTo(map);
-                    userMarker.bindPopup("You are here!").openPopup();
+                    userMarker.bindPopup("אתה כאן!").openPopup();
                     
-                    // Center map on user's location
                     map.setView([lat, lon], 15);
                 }, function(error) {
                     alert("Error getting location: " + error.message);
