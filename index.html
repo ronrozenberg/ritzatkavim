@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Location on OpenStreetMap</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: Arial, sans-serif;
+        }
+        #map { 
+            width: 100vw; 
+            height: 100vh; 
+        }
+        .button-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .radius-button, .google-maps-button {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .radius-button:hover, .google-maps-button:hover {
+            background: #f0f0f0;
+        }
+        .location-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .google-maps-button {
+            background: #4285f4;
+            color: white;
+            border: none;
+        }
+        .status-message {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 2px solid #ccc;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button class="radius-button" onclick="showRandomLocation(5)">5 km</button>
+        <button class="radius-button" onclick="showRandomLocation(10)">10 km</button>
+        <button class="radius-button" onclick="showRandomLocation(15)">15 km</button>
+        <button class="google-maps-button" onclick="openInGoogleMaps()">Open in Google Maps</button>
+    <button class="google-maps-button" onclick="openInMoovit()" style="background: #07cf93;">Open in Moovit</button>
+    </div>
+    <div id="map"></div>
+    <div id="status" class="status-message"></div>
+    <button class="location-button" onclick="locateUser()">Show My Location</button>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([0, 0], 2);
+        let userMarker;
+        let randomMarker;
+        let userPosition;
+        let randomPosition;
+        let transitStops = new Map();
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        function showStatus(message) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+        }
+
+        function hideStatus() {
+            document.getElementById('status').style.display = 'none';
+        }
+
+        async function fetchTransitStops(lat, lon, radius) {
+            const query = `
+                [out:json][timeout:25];
+                (
+                    node["highway"="bus_stop"](around:${radius * 1000},${lat},${lon});
+                    node["public_transport"="platform"](around:${radius * 1000},${lat},${lon});
+                    node["public_transport"="stop_position"](around:${radius * 1000},${lat},${lon});
+                );
+                out body;
+                >;
+                out skel qt;
+            `;
+
+            try {
+                const response = await fetch('https://overpass-api.de/api/interpreter', {
+                    method: 'POST',
+                    body: query
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.json();
+                return data.elements.filter(elem => elem.type === 'node');
+            } catch (error) {
+                console.error('Error fetching transit stops:', error);
+                throw error;
+            }
+        }
+
+        function getRandomLocation(center, radius) {
+            const radiusInDegrees = radius / 111.32;
+            const randomAngle = Math.random() * 2 * Math.PI;
+            const randomRadius = Math.sqrt(Math.random()) * radiusInDegrees;
+            const newLat = center[0] + (randomRadius * Math.cos(randomAngle));
+            const newLng = center[1] + (randomRadius * Math.sin(randomAngle));
+            return [newLat, newLng];
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function findNearestStop(stops, lat, lng, maxDistance = 0.1) {
+            let nearest = null;
+            let minDist = maxDistance;
+            
+            for (const stop of stops) {
+                const dist = getDistance(lat, lng, stop.lat, stop.lon);
+                if (dist < minDist) {
+                    minDist = dist;
+                    nearest = stop;
+                }
+            }
+            
+            return nearest;
+        }
+        
+        async function showRandomLocation(radius) {
+            if (!userPosition) {
+                alert("Please allow location access first!");
+                return;
+            }
+            
+            showStatus('Finding suitable location...');
+            
+            try {
+                // Clear existing markers
+                if (randomMarker) {
+                    map.removeLayer(randomMarker);
+                }
+
+                // Fetch transit stops if we don't have them for this area
+                const stops = await fetchTransitStops(userPosition.lat, userPosition.lng, radius);
+                
+                let validLocation = null;
+                let nearestStop = null;
+                let attempts = 0;
+                const maxAttempts = 50;
+
+                while (!validLocation && attempts < maxAttempts) {
+                    const location = getRandomLocation([userPosition.lat, userPosition.lng], radius);
+                    const stop = findNearestStop(stops, location[0], location[1]);
+                    
+                    if (stop) {
+                        validLocation = [stop.lat, stop.lon];
+                        nearestStop = stop;
+                        break;
+                    }
+                    attempts++;
+                }
+
+                if (!validLocation) {
+                    showStatus('No suitable location found near public transport');
+                    setTimeout(hideStatus, 2000);
+                    return;
+                }
+
+                randomPosition = validLocation;
+                
+                // Add marker for random location
+                randomMarker = L.marker(randomPosition).addTo(map);
+                const stopName = nearestStop.tags ? (nearestStop.tags.name || 'Unnamed stop') : 'Bus stop';
+                randomMarker.bindPopup(`Near: ${stopName}`).openPopup();
+                
+                // Draw radius circle
+                const circle = L.circle([userPosition.lat, userPosition.lng], {
+                    color: 'blue',
+                    fillColor: '#30f',
+                    fillOpacity: 0.1,
+                    radius: radius * 1000
+                }).addTo(map);
+                
+                // Fit bounds to show both markers
+                const bounds = L.latLngBounds([
+                    [userPosition.lat, userPosition.lng],
+                    randomPosition
+                ]).pad(0.1);
+                map.fitBounds(bounds);
+                
+                // Remove circle after 2 seconds
+                setTimeout(() => {
+                    map.removeLayer(circle);
+                }, 2000);
+
+                hideStatus();
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('Error finding location. Please try again.');
+                setTimeout(hideStatus, 2000);
+            }
+        }
+        
+        function openInGoogleMaps() {
+            if (!userPosition || !randomPosition) {
+                alert("Please generate a random location first!");
+                return;
+            }
+            
+            const url = `https://www.google.com/maps/dir/?api=1&origin=${userPosition.lat},${userPosition.lng}&destination=${randomPosition[0]},${randomPosition[1]}`;
+            window.open(url, '_blank');
+        }
+
+        function openInMoovit() {
+            if (!userPosition || !randomPosition) {
+                alert("Please generate a random location first!");
+                return;
+            }
+            
+            // Deep link for mobile app
+            const appUrl = `moovit://directions?dest_lat=${randomPosition[0]}&dest_lon=${randomPosition[1]}&orig_lat=${userPosition.lat}&orig_lon=${userPosition.lng}&auto_run=true`;
+            
+            // Fallback web URL
+            const webUrl = `https://moovit.com/?to=latlon:${randomPosition[0]}_${randomPosition[1]}&from=latlon:${userPosition.lat}_${userPosition.lng}&fll=${userPosition.lat}_${userPosition.lng}&tll=${randomPosition[0]}_${randomPosition[1]}&customerId=4908&metroId=1&lang=he`;
+
+            // Try to open app first, then fall back to web
+            window.location.href = appUrl;
+            
+            // If app doesn't open within 1 second, go to web version
+            setTimeout(() => {
+                window.location.href = webUrl;
+            }, 1000);
+        }
+        
+        function locateUser() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    userPosition = { lat, lng: lon };
+                    
+                    // Remove existing marker if any
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+                    
+                    // Add marker at user's location
+                    userMarker = L.marker([lat, lon]).addTo(map);
+                    userMarker.bindPopup("You are here!").openPopup();
+                    
+                    // Center map on user's location
+                    map.setView([lat, lon], 15);
+                }, function(error) {
+                    alert("Error getting location: " + error.message);
+                });
+            } else {
+                alert("Geolocation is not supported by your browser");
+            }
+        }
+        
+        // Initial location request
+        locateUser();
+    </script>
+</body>
+</html>
