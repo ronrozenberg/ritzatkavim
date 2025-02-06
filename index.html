@@ -125,25 +125,15 @@
         }
         .route-info {
             position: absolute;
-            bottom: 100px;
-            padding: 1vh;
+            bottom: 70px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .route-type {
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
-        }
-        .route-color {
-            width: 20px;
-            height: 3px;
-            margin-left: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #ccc;
+            display: none;
         }
     </style>
 </head>
@@ -465,16 +455,6 @@
     <div id="countdown" class="countdown-container">
         <div>זמן מוערך להגעה עם תחבורה ציבורית:</div>
         <div class="timer" id="timer"></div>
-    </div>
-    <div id="route-info" class="route-info">
-        <div class="route-type">
-            <div class="route-color" style="background: #3388ff;"></div>
-            <span id="driving-info">נהיגה: -- ק"מ, -- דקות</span>
-        </div>
-        <div class="route-type">
-            <div class="route-color" style="background: #ff4444;"></div>
-            <span id="walking-info">הליכה: -- ק"מ, -- דקות</span>
-        </div>
     </div>
 </body>
 </html>
