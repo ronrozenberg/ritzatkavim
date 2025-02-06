@@ -261,16 +261,9 @@
             // Deep link for mobile app
             const appUrl = `moovit://directions?dest_lat=${randomPosition[0]}&dest_lon=${randomPosition[1]}&orig_lat=${userPosition.lat}&orig_lon=${userPosition.lng}&auto_run=true`;
             
-            // Fallback web URL
-            const webUrl = `https://moovit.com/?to=latlon:${randomPosition[0]}_${randomPosition[1]}&from=latlon:${userPosition.lat}_${userPosition.lng}&fll=${userPosition.lat}_${userPosition.lng}&tll=${randomPosition[0]}_${randomPosition[1]}&customerId=4908&metroId=1&lang=he`;
-
             // Try to open app first, then fall back to web
             window.location.href = appUrl;
             
-            // If app doesn't open within 1 second, go to web version
-            setTimeout(() => {
-                window.location.href = webUrl;
-            }, 1000);
         }
         
         function locateUser() {
