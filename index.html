@@ -14,7 +14,7 @@
         }
         #map { 
             width: 100vw; 
-            height: 100vh; 
+            height: 90vh; 
         }
         .button-container {
             position: absolute;
@@ -33,7 +33,7 @@
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .radius-button {
+        .radius-button, .route-button { 
             padding: 12px 24px;
             background: white;
             border: 2px solid #4285f4;
@@ -44,7 +44,7 @@
             font-weight: bold;
             transition: all 0.3s ease;
         }
-        .radius-button:hover {
+        .radius-button:hover, .route-button:hover { 
             background: #4285f4;
             color: white;
         }
@@ -61,24 +61,24 @@
             min-width: 150px;
         }
         .google-maps-button {
-            background: #4285f4;
+            background-image: linear-gradient(to right,#48b564,#fcc60e,#ed5748,#2c85eb,#5695f6);
         }
         .google-maps-button:hover {
-            background: #357abd;
+            background-image: linear-gradient(to right,#37914d,#ad870a,#aa3c31,#2165b3,#4071b9);
         }
         .moovit-button {
-            background: #07cf93;
+            background: #ff6c04;
         }
         .moovit-button:hover {
-            background: #06b37f;
+            background: #db5e05;
         }
         .location-button {
             position: absolute;
-            bottom: 20px;
-            left: 50%;
+            bottom: 12vh;
+            left: 10%;
             transform: translateX(-50%);
             z-index: 1000;
-            padding: 12px 24px;
+            padding: 12px 12px;
             background: white;
             border: 2px solid #4285f4;
             border-radius: 10px;
@@ -89,7 +89,7 @@
             transition: all 0.3s ease;
         }
         .location-button:hover {
-            background: #4285f4;
+            background: #97bbf5;
             color: white;
         }
         .status-message {
@@ -108,42 +108,67 @@
         }
         .countdown-container {
             position: absolute;
-            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            background: white;
             padding: 15px 30px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: none;
             text-align: center;
-            min-width: 200px;
-            font-size: 18px;
+            font-size: 2vh;
             font-weight: bold;
         }
         .timer {
             color: #4285f4;
-            font-size: 24px;
-            margin-top: 5px;
+            font-size: 2vh;
+            margin-bottom: 1vh;
+        }
+        .route-info {
+            position: absolute;
+            bottom: 100px;
+            padding: 1vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .route-type {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .route-color {
+            width: 20px;
+            height: 3px;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
+    <div>
     <div class="button-container">
         <button class="radius-button" onclick="showRandomLocation(5)">5 ק״מ</button>
         <button class="radius-button" onclick="showRandomLocation(10)">10 ק״מ</button>
         <button class="radius-button" onclick="showRandomLocation(15)">15 ק״מ</button>
-        <button class="nav-button google-maps-button" onclick="openInGoogleMaps()">Google Maps-פתח ב</button>
-        <button class="nav-button moovit-button" onclick="openInMoovit()">Moovit-פתח ב</button>
+        <button class="nav-button google-maps-button" onclick="openInGoogleMaps()" dir="ltr">Google Maps-פתח ב</button>
+        <button class="nav-button moovit-button" onclick="openInMoovit()"dir="ltr">Moovit-פתח ב</button>
+        <button class="route-button" onclick="createRoute()">Show Route</button>
     </div>
     <div id="map"></div>
     <div id="status" class="status-message"></div>
-    <div id="countdown" class="countdown-container">
-        <div>זמן מוערך להגעה עם תחבורה ציבורית:</div>
-        <div class="timer" id="timer"></div>
-    </div>
-    <button class="location-button" onclick="locateUser()">מצא את המיקום שלי</button>
+    <button class="location-button" onclick="locateUser()">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="25" height="25" viewBox="0 0 256 256" xml:space="preserve">
+            <defs>
+            </defs>
+            <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                <path d="M 45 90 c -1.415 0 -2.725 -0.748 -3.444 -1.966 l -4.385 -7.417 C 28.167 65.396 19.664 51.02 16.759 45.189 c -2.112 -4.331 -3.175 -8.955 -3.175 -13.773 C 13.584 14.093 27.677 0 45 0 c 17.323 0 31.416 14.093 31.416 31.416 c 0 4.815 -1.063 9.438 -3.157 13.741 c -0.025 0.052 -0.053 0.104 -0.08 0.155 c -2.961 5.909 -11.41 20.193 -20.353 35.309 l -4.382 7.413 C 47.725 89.252 46.415 90 45 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(4,136,219); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                <path d="M 45 45.678 c -8.474 0 -15.369 -6.894 -15.369 -15.368 S 36.526 14.941 45 14.941 c 8.474 0 15.368 6.895 15.368 15.369 S 53.474 45.678 45 45.678 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+            </g>
+            </svg>
+    </button>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
@@ -153,6 +178,7 @@
         let userPosition;
         let randomPosition;
         let countdownInterval;
+        let routeLayer;
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -243,7 +269,7 @@
             const newLng = center[1] + (randomRadius * Math.sin(randomAngle));
             return [newLat, newLng];
         }
-
+        
         function getDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -297,6 +323,7 @@
                     if (stop) {
                         validLocation = [stop.lat, stop.lon];
                         nearestStop = stop;
+                        createRoute()
                         break;
                     }
                     attempts++;
@@ -341,6 +368,49 @@
                 console.error('Error:', error);
                 showStatus('שגיאה במציאת מיקום. אנא נסה שוב');
                 setTimeout(hideStatus, 2000);
+            }
+        }
+        async function createRoute() {
+            if (!userPosition || !randomPosition) {
+                alert("בחר מיקום קודם");
+                return;
+            }
+            
+            // Remove existing route if any
+            if (routeLayer) {
+                map.removeLayer(routeLayer);
+            }
+            
+            try {
+                // Fetch route from OSRM
+                const response = await fetch(
+                    `https://router.project-osrm.org/route/v1/driving/${userPosition.lng},${userPosition.lat};${randomPosition[1]},${randomPosition[0]}?overview=full&geometries=geojson`
+                );
+                const data = await response.json();
+                
+                if (data.routes && data.routes.length > 0) {
+                    // Draw route on map
+                    routeLayer = L.geoJSON(data.routes[0].geometry, {
+                        style: {
+                            color: '#3388ff',
+                            weight: 6,
+                            opacity: 0.6
+                        }
+                    }).addTo(map);
+                    
+                    // Show route information
+                    const distance = (data.routes[0].distance / 1000).toFixed(2);
+                    const duration = (data.routes[0].duration / 60).toFixed(0);
+                    const routeInfo = document.getElementById('routeInfo');
+                    routeInfo.innerHTML = `Distance: ${distance} km<br>Duration: ${duration} minutes`;
+                    routeInfo.style.display = 'block';
+                    
+                    // Fit map to show entire route
+                    map.fitBounds(routeLayer.getBounds(), { padding: [50, 50] });
+                }
+            } catch (error) {
+                alert("Error creating route. Please try again.");
+                console.error(error);
             }
         }
         
@@ -391,5 +461,20 @@
         // Initial location request
         locateUser();
     </script>
+    </div>
+    <div id="countdown" class="countdown-container">
+        <div>זמן מוערך להגעה עם תחבורה ציבורית:</div>
+        <div class="timer" id="timer"></div>
+    </div>
+    <div id="route-info" class="route-info">
+        <div class="route-type">
+            <div class="route-color" style="background: #3388ff;"></div>
+            <span id="driving-info">נהיגה: -- ק"מ, -- דקות</span>
+        </div>
+        <div class="route-type">
+            <div class="route-color" style="background: #ff4444;"></div>
+            <span id="walking-info">הליכה: -- ק"מ, -- דקות</span>
+        </div>
+    </div>
 </body>
 </html>
