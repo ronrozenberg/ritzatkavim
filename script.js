@@ -1,4 +1,4 @@
-        const map = L.map('map').setView([0, 0], 2);
+        const map = L.map('map', { zoomControl: false }).setView([0, 0], 2);
         let userMarker;
         let randomMarker;
         let userPosition;

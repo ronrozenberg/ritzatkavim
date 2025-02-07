@@ -9,11 +9,10 @@ body {
 }
 #map { 
     width: 100vw; 
-    height: 85vh; 
+    height: 80vh; 
 }
 .button-container {
     position: absolute;
-    top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -25,6 +24,7 @@ body {
     min-width: 450px;
     background: rgba(255, 255, 255, 0.5);
     padding: 15px;
+    padding-top: 1vh;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -41,9 +41,7 @@ body {
 }
 
 .route-button { 
-    position: absolute;
-    left: 10%;
-    top: 70%;
+    display: block;
     transform: translateX(-50%);
     z-index: 1000;
     padding: 12px 12px;
@@ -96,6 +94,7 @@ body {
 .google-maps-button {
     background-image: url('Palette.svg');
     background-size: cover;
+    height:47px;
     color: rgb(255, 255, 255);
 }
 .google-maps-button:hover {
@@ -103,14 +102,12 @@ body {
 }
 .moovit-button {
     background: #ff6c04;
+    height:47px;
 }
 .moovit-button:hover {
     background: #db5e05;
 }
 .location-button {
-    position: absolute;
-    bottom: 16%;
-    left: 10%;
     transform: translateX(-50%);
     z-index: 1000;
     padding: 12px 12px;
@@ -122,6 +119,12 @@ body {
     font-weight: bold;
     color: #4285f4;
     transition: all 0.3s ease;
+}
+.position{
+    z-index: 1000;
+    position: absolute;
+    top: 65%;
+    left: 10%;
 }
 .location-button:hover {
     background: #97bbf5;
@@ -152,7 +155,7 @@ body {
 #logo{
     position: absolute;
     height:8vh;
-    bottom:18%;
+    bottom:23%;
     right: 1%;
     z-index: 1000;
 }
