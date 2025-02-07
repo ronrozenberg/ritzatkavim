@@ -4,8 +4,8 @@ body {
     margin: 0; 
     padding: 0; 
     direction: rtl;
-    overflow-x: 0;
-    overflow-y: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 #map { 
     width: 100vw; 
@@ -94,13 +94,11 @@ body {
     color:gold;
 }
 .google-maps-button {
-    /* background-image: linear-gradient(to right,#48b564,#fcc60e,#ed5748,#2c85eb,#5695f6); */
     background-image: url('/Palette.svg');
     background-size: cover;
     color: rgb(255, 255, 255);
 }
 .google-maps-button:hover {
-    /* background-image: linear-gradient(to right,#37914d,#ad870a,#aa3c31,#2165b3,#4071b9); */
     filter: brightness(80%)
 }
 .moovit-button {
@@ -149,4 +147,12 @@ body {
     margin-bottom: 1vh;
     margin-top: 2vh;
     text-align: center;
+}
+
+#logo{
+    position: absolute;
+    height:8vh;
+    bottom:18%;
+    right: 1%;
+    z-index: 1000;
 }
