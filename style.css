@@ -94,7 +94,7 @@ body {
     color:gold;
 }
 .google-maps-button {
-    background-image: url('/Palette.svg');
+    background-image: url('Palette.svg');
     background-size: cover;
     color: rgb(255, 255, 255);
 }
