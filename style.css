@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 body { 
+    font-family: "Rubik", serif;
     margin: 0; 
     padding: 0; 
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     direction: rtl;
     overflow-x: 0;
     overflow-y: 0;
@@ -41,8 +42,8 @@ body {
 
 .route-button { 
     position: absolute;
-    margin-bottom: 45vh;
     left: 10%;
+    top: 70%;
     transform: translateX(-50%);
     z-index: 1000;
     padding: 12px 12px;
@@ -93,10 +94,14 @@ body {
     color:gold;
 }
 .google-maps-button {
-    background-image: linear-gradient(to right,#48b564,#fcc60e,#ed5748,#2c85eb,#5695f6);
+    /* background-image: linear-gradient(to right,#48b564,#fcc60e,#ed5748,#2c85eb,#5695f6); */
+    background-image: url('/Palette.svg');
+    background-size: cover;
+    color: rgb(255, 255, 255);
 }
 .google-maps-button:hover {
-    background-image: linear-gradient(to right,#37914d,#ad870a,#aa3c31,#2165b3,#4071b9);
+    /* background-image: linear-gradient(to right,#37914d,#ad870a,#aa3c31,#2165b3,#4071b9); */
+    filter: brightness(80%)
 }
 .moovit-button {
     background: #ff6c04;
@@ -106,7 +111,7 @@ body {
 }
 .location-button {
     position: absolute;
-    bottom: 16vh;
+    bottom: 16%;
     left: 10%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -135,30 +140,13 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    display:none;
 }
-.countdown-container {
-    padding: 15px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    font-size: 2vh;
-    font-weight: bold;
-}
+
 #timer {
     color: #4285f4;
     font-size: 10vh;
     margin-bottom: 1vh;
     margin-top: 2vh;
-    margin-left: 2vh;
-    text-align: left;
-}
-#routeInfo {
-    position: absolute;
-    z-index: 1000;
-    background: white;
-    padding: 10px;
-    border-radius: 1vh;
-    border: 2px solid #ccc;
-    color:black;
-    display: none;
+    text-align: center;
 }

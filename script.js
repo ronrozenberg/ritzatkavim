@@ -225,11 +225,7 @@
         
                 const hours = Math.floor(timeLeft / 3600);
                 let minutes = Math.floor((timeLeft % 3600) / 60);
-                const seconds = timeLeft % 60;
-
-                if (minutes < 10 && minutes > 0) {
-                    minutes += 1;
-                }
+                const seconds = ((timeLeft % 3600) % 60);
 
                 timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${Math.floor(seconds).toString().padStart(2, '0')}`;
         
