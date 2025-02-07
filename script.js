@@ -192,8 +192,11 @@
                     const distance = (data.routes[0].distance / 1000).toFixed(2);
                     const durationm = ((data.routes[0].duration*2)/60).toFixed(0);
                     const durations = ((data.routes[0].duration*2)%60).toFixed(0);
+                    durationx = data.routes[0].duration;
                     const routeInfo = document.getElementById('routeInfo');
-                    routeInfo.innerHTML = `זמן מוערך: ${durationm}:${durations}`;
+                    if(durations < 10) {
+                        routeInfo.innerHTML = `זמן לנצח: ${durationm}:0${durations}`;
+                    } else routeInfo.innerHTML = `זמן לנצח: ${durationm}:${durations}`;
                     routeInfo.style.display = 'block';
                     
                     // Fit map to show entire route
@@ -209,26 +212,31 @@
             if (countdownInterval) {
                 clearInterval(countdownInterval);
             }
-
-            const countdownElement = document.getElementById('countdown');
+        
             const timerElement = document.getElementById('timer');
-            let timeLeft = (duration)*2;
-
+            let timeLeft = durationx * 2;
+        
             function updateTimer() {
+                if (timeLeft < 0) {  
+                    clearInterval(countdownInterval);
+                    timerElement.style.display = 'none';
+                    return;
+                }
+        
                 const hours = Math.floor(timeLeft / 3600);
-                const minutes = Math.floor((timeLeft % 3600) / 60);
+                let minutes = Math.floor((timeLeft % 3600) / 60);
                 const seconds = timeLeft % 60;
 
-                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                if (timeLeft === 0) {
-                    clearInterval(countdownInterval);
-                    countdownElement.style.display = 'none';
+                if (minutes < 10 && minutes > 0) {
+                    minutes += 1;
                 }
+
+                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${Math.floor(seconds).toString().padStart(2, '0')}`;
+        
                 timeLeft--;
             }
-
-            countdownElement.style.display = 'block';
+        
+            timerElement.style.display = 'block';
             updateTimer();
             countdownInterval = setInterval(updateTimer, 1000);
         }

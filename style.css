@@ -18,15 +18,15 @@ body {
     gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
-    width: 90%;
-    max-width: 600px;
-    background: rgba(255, 255, 255, 0.9);
+    width: 60%;
+    min-width: 450px;
+    background: rgba(255, 255, 255, 0.5);
     padding: 15px;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .radius-button { 
-    padding: 12px 24px;
+    padding: 12px;
     background: white;
     border: 2px solid #4285f4;
     border-radius: 10px;
@@ -38,7 +38,12 @@ body {
 }
 
 .route-button { 
-    padding: 12px 24px;
+    position: absolute;
+    bottom: 23vh;
+    left: 10%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 12px;
     background: white;
     border: 2px solid #57f442;
     border-radius: 10px;
@@ -53,11 +58,11 @@ body {
     color: white;
 }
 .route-button:hover { 
-    background: #42f477;
+    background: #a2f1ba;
     color: white;
 }
 .nav-button {
-    padding: 12px 24px;
+    padding: 12px;
     color: white;
     border: none;
     border-radius: 10px;
@@ -67,6 +72,24 @@ body {
     transition: all 0.3s ease;
     flex: 1;
     min-width: 150px;
+}
+#start{
+    display:block;
+    padding: 1vh;
+    width: 330px;
+    border-radius: 10px;
+    border-width: 0;
+    color:white;
+    background-image: linear-gradient(to right,#004C99,#00A65E,#8CD025,#99CA3C,#F58112);
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+#start:hover{
+    color:gold;
 }
 .google-maps-button {
     background-image: linear-gradient(to right,#48b564,#fcc60e,#ed5748,#2c85eb,#5695f6);
@@ -82,7 +105,7 @@ body {
 }
 .location-button {
     position: absolute;
-    bottom: 12vh;
+    bottom: 16vh;
     left: 10%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -113,30 +136,28 @@ body {
     text-align: center;
 }
 .countdown-container {
-    position: absolute;
-    left: 80%;
-    transform: translateX(-50%);
-    z-index: 1000;
     padding: 15px 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     text-align: center;
     font-size: 2vh;
     font-weight: bold;
 }
-.timer {
+#timer {
     color: #4285f4;
-    font-size: 2vh;
+    font-size: 10vh;
     margin-bottom: 1vh;
+    margin-top: 2vh;
+    margin-left: 2vh;
+    text-align: left;
 }
 #routeInfo {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 1000;
     background: white;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 1vh;
     border: 2px solid #ccc;
+    color:black;
     display: none;
 }
