@@ -206,13 +206,21 @@
                 console.error(error);
             }
         }
-        
+        function areyousurepopup(){
+            const pop = document.getElementById('surepopup');
+            const currentDisplay = window.getComputedStyle(pop).display;
+    
+            if(currentDisplay === 'none') {
+                pop.style.display = 'block';
+            } else {
+                pop.style.display = 'none';
+            }
+        }
         function startCountdown() {
             // Clear any existing countdown
             if (countdownInterval) {
                 clearInterval(countdownInterval);
             }
-        
             const timerElement = document.getElementById('timer');
             let timeLeft = durationx * 2;
         
@@ -231,8 +239,10 @@
         
                 timeLeft--;
             }
-        
+            
             timerElement.style.display = 'block';
+            const start = document.getElementById('start');
+            start.style.display = 'none';
             updateTimer();
             countdownInterval = setInterval(updateTimer, 1000);
         }

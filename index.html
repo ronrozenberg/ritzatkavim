@@ -17,7 +17,7 @@
         <button class="radius-button" id="10" onclick="showRandomLocation(10)"> 🎯 10 ק״מ</button>
         <button class="radius-button" id="15" onclick="showRandomLocation(15)"> 🎯 15 ק״מ</button>
         </div>
-        <div>
+        <div id="mapsmoovit">
         <button class="nav-button google-maps-button" onclick="openInGoogleMaps()" dir="ltr">Google Maps-פתח ב</button>
         <button class="nav-button moovit-button" onclick="openInMoovit()"dir="ltr">Moovit-פתח ב</button>
         </div>
@@ -51,5 +51,11 @@
     </div>
     <h1 id="timer"></h1>
     <img src="ritzatkavim.svg" id="logo">
+    <button id="restart" onclick="areyousurepopup()">התחלה מחדש</button>
+    <div id="surepopup">
+        <h2>להתחיל מחדש?</h2>
+        <button onclick="window.location.reload()" id="yes">כן</button>
+        <button onclick="areyousurepopup()" id="no">לא</button>
+    </div>
 </body>
 </html>
