@@ -193,11 +193,6 @@
                     const durationm = ((data.routes[0].duration*2)/60).toFixed(0);
                     const durations = ((data.routes[0].duration*2)%60).toFixed(0);
                     durationx = data.routes[0].duration;
-                    const routeInfo = document.getElementById('routeInfo');
-                    if(durations < 10) {
-                        routeInfo.innerHTML = `זמן לנצח: ${durationm}:0${durations}`;
-                    } else routeInfo.innerHTML = `זמן לנצח: ${durationm}:${durations}`;
-                    routeInfo.style.display = 'block';
                     
                     // Fit map to show entire route
                     map.fitBounds(randomMarker.getBounds(), { padding: [150, 150] });

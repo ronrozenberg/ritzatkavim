@@ -141,7 +141,7 @@ body {
 .position{
     z-index: 1000;
     position: absolute;
-    top: 65%;
+    top: 65vh;
     left: 10px;
 }
 .location-button:hover {
@@ -163,8 +163,8 @@ body {
 }
 #surepopup {
     position: absolute;
-    left: 25%;
-    top: 40%;
+    left: 25vw;
+    top: 40vh;
     color:rgb(221, 59, 59);
     z-index: 1000;
     background: white;
@@ -186,8 +186,8 @@ body {
 #logo{
     position: absolute;
     height:8vh;
-    bottom:23%;
-    right: 1%;
+    bottom:8vh;
+    right: 1vw;
     z-index: 1000;
 }
 
@@ -216,7 +216,7 @@ body {
 }
 
 #restart{
-    width:25vw;
+    width:150px;
     text-align: center;
     background: white;
     border: 2px solid #e08585;
