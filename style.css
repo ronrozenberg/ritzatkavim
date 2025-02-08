@@ -4,9 +4,13 @@ body {
     margin: 0; 
     padding: 0; 
     direction: rtl;
+}
+
+#overf{
     overflow-x: hidden;
     overflow-y: hidden;
 }
+
 #map { 
     width: 100vw; 
     height: 80vh; 
