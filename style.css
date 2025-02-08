@@ -30,6 +30,8 @@ body {
 }
 .radius-button { 
     padding: 12px;
+    margin-right:5px;
+    margin-left:5px;
     background: white;
     border: 2px solid #4285f4;
     border-radius: 10px;
@@ -42,7 +44,6 @@ body {
 
 .route-button { 
     display: block;
-    transform: translateX(-50%);
     z-index: 1000;
     padding: 12px 12px;
     background: white;
@@ -76,7 +77,7 @@ body {
 #start{
     display:block;
     padding: 1vh;
-    width: 330px;
+    width: 450px;
     border-radius: 10px;
     border-width: 0;
     color:white;
@@ -95,6 +96,7 @@ body {
     background-image: url('Palette.svg');
     background-size: cover;
     height:47px;
+    margin-left:5px;
     color: rgb(255, 255, 255);
 }
 .google-maps-button:hover {
@@ -103,14 +105,16 @@ body {
 .moovit-button {
     background: #ff6c04;
     height:47px;
+    width:180px;
+    margin-right:5px;
 }
 .moovit-button:hover {
     background: #db5e05;
 }
 .location-button {
-    transform: translateX(-50%);
     z-index: 1000;
     padding: 12px 12px;
+    margin-bottom: 10px;
     background: white;
     border: 2px solid #4285f4;
     border-radius: 10px;
@@ -124,7 +128,7 @@ body {
     z-index: 1000;
     position: absolute;
     top: 65%;
-    left: 10%;
+    left: 10px;
 }
 .location-button:hover {
     background: #97bbf5;
