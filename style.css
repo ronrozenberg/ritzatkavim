@@ -184,11 +184,11 @@ body {
 }
 
 #logo{
-    position: absolute;
     height:8vh;
-    bottom:8vh;
-    right: 1vw;
     z-index: 1000;
+    position: absolute;
+    top: 69vh;
+    right: 1vw;
 }
 
 #yes{
