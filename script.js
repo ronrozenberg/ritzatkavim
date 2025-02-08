@@ -1,4 +1,5 @@
-        const map = L.map('map', { zoomControl: false }).setView([0, 0], 2);
+        const map = L.map('map', { zoomControl: false }).setView([0, 0], 2, );
+        map.attributionControl.setPrefix(false);
         let userMarker;
         let randomMarker;
         let userPosition;
@@ -8,7 +9,7 @@
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
+            attribution: 'OpenStreetMap contributors © '
         }).addTo(map);
 
         function showStatus(message) {
