@@ -115,7 +115,7 @@
                     const stop = findNearestStop(stops, location[0], location[1]);
                     
                     if (stop) {
-                        validLocation = [stop.lat, stop.lon];
+                        validLocation = location;
                         nearestStop = stop;
                         createRoute()
                         break;
@@ -275,8 +275,24 @@
                         map.removeLayer(userMarker);
                     }
                     
-                    userMarker = L.marker([lat, lon]).addTo(map);
-                    userMarker.bindPopup("אתה כאן!").openPopup();
+                    userMarker = L.marker([lat, lon],{icon: blueIcon}).addTo(map);
+                });
+            }
+        }
+
+        function showlocateUser() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    userPosition = { lat, lng: lon };
+                    
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+                    
+                    userMarker = L.marker([lat, lon],{icon: blueIcon}).addTo(map);
                     
                     map.setView([lat, lon], 15);
                 }, function(error) {
@@ -286,6 +302,18 @@
                 alert("Geolocation is not supported by your browser");
             }
         }
+        var blueIcon = L.icon({
+            iconUrl: 'markerl.svg',
+            iconSize:     [15,15],
+            iconAnchor: [0, 0], 
+            shadowUrl: 'markersh.svg',
+            shadowAnchor: [67, 67], 
+            shadowSize:     [150,150]
+        });
         
-        // Initial location request
-        locateUser();
+        let intervalID;
+
+        function repeatEverySecond() {
+            intervalID = setInterval(locateUser, 1000);
+        }
+        showlocateUser();
