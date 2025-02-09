@@ -60,14 +60,7 @@ body {
     font-weight: bold;
     transition: all 0.3s ease;
 }
-.radius-button:hover { 
-    background: #4285f4;
-    color: white;
-}
-.route-button:hover { 
-    background: #a2f1ba;
-    color: white;
-}
+
 .nav-button {
     padding: 12px;
     color: white;
@@ -95,9 +88,6 @@ body {
     flex: 1;
 }
 
-#start:hover{
-    color:gold;
-}
 .google-maps-button {
     background-image: url('Palette.svg');
     background-size: cover;
@@ -109,9 +99,7 @@ body {
     overflow:hidden;
     color: rgb(255, 255, 255);
 }
-.google-maps-button:hover {
-    filter: brightness(80%)
-}
+
 .moovit-button {
     background: #ff6c04;
     height:47px;
@@ -119,9 +107,7 @@ body {
     margin-right:5px;
     font-size:14px;
 }
-.moovit-button:hover {
-    background: #db5e05;
-}
+
 #mapsmoovit{
     display:inline-flex;
 }
@@ -144,10 +130,7 @@ body {
     top: 65vh;
     left: 10px;
 }
-.location-button:hover {
-    background: #97bbf5;
-    color: white;
-}
+
 .status-message {
     position: absolute;
     left: 50%;
